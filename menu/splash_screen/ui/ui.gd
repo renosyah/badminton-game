@@ -9,6 +9,10 @@ func _ready():
 	Admob.initialize()
 	
 func _initialization_finish():
+	if Global.has_login:
+		_sign_in_completed()
+		return
+		
 	OAuth2.check_sign_in_status()
 
 func _sign_in_completed():

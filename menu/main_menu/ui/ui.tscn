@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://menu/main_menu/ui/ui.gd" type="Script" id=1]
-[ext_resource path="res://assets/ui/fonts/montserrat_eb_16.tres" type="DynamicFont" id=2]
+[ext_resource path="res://assets/ui/fonts/montserrat_eb_32.tres" type="DynamicFont" id=2]
 [ext_resource path="res://addons/SafeArea/SafeArea.gd" type="Script" id=3]
+[ext_resource path="res://assets/ui/fonts/montserrat_eb_16.tres" type="DynamicFont" id=4]
+[ext_resource path="res://addons/server-browser/server_browser.tscn" type="PackedScene" id=5]
 
 [node name="ui" type="Control"]
 anchor_right = 1.0
@@ -28,9 +30,15 @@ margin_right = 600.0
 margin_bottom = 1024.0
 mouse_filter = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control/SafeArea/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/SafeArea/VBoxContainer"]
 margin_right = 600.0
-margin_bottom = 80.0
+margin_bottom = 10.0
+rect_min_size = Vector2( 0, 10 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control/SafeArea/VBoxContainer"]
+margin_top = 14.0
+margin_right = 600.0
+margin_bottom = 94.0
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/SafeArea/VBoxContainer/HBoxContainer"]
 margin_right = 10.0
@@ -42,7 +50,7 @@ margin_left = 14.0
 margin_right = 134.0
 margin_bottom = 80.0
 rect_min_size = Vector2( 120, 80 )
-custom_fonts/font = ExtResource( 2 )
+custom_fonts/font = ExtResource( 4 )
 text = "Sign out"
 
 [node name="MarginContainer2" type="MarginContainer" parent="CanvasLayer/Control/SafeArea/VBoxContainer/HBoxContainer"]
@@ -60,7 +68,7 @@ custom_constants/shadow_offset_x = 1
 custom_constants/line_spacing = 1
 custom_constants/shadow_offset_y = 1
 custom_constants/shadow_as_outline = 1
-custom_fonts/font = ExtResource( 2 )
+custom_fonts/font = ExtResource( 4 )
 text = "Hello : "
 
 [node name="MarginContainer3" type="MarginContainer" parent="CanvasLayer/Control/SafeArea/VBoxContainer/HBoxContainer"]
@@ -69,4 +77,43 @@ margin_right = 265.0
 margin_bottom = 80.0
 rect_min_size = Vector2( 10, 0 )
 
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/Control/SafeArea/VBoxContainer"]
+margin_top = 98.0
+margin_right = 600.0
+margin_bottom = 1024.0
+size_flags_vertical = 3
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Control/SafeArea/VBoxContainer/CenterContainer"]
+margin_left = 171.0
+margin_top = 423.0
+margin_right = 429.0
+margin_bottom = 503.0
+
+[node name="host" type="Button" parent="CanvasLayer/Control/SafeArea/VBoxContainer/CenterContainer/HBoxContainer2"]
+margin_right = 120.0
+margin_bottom = 80.0
+rect_min_size = Vector2( 120, 80 )
+custom_fonts/font = ExtResource( 2 )
+text = "Host"
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/SafeArea/VBoxContainer/CenterContainer/HBoxContainer2"]
+margin_left = 124.0
+margin_right = 134.0
+margin_bottom = 80.0
+rect_min_size = Vector2( 10, 0 )
+
+[node name="join" type="Button" parent="CanvasLayer/Control/SafeArea/VBoxContainer/CenterContainer/HBoxContainer2"]
+margin_left = 138.0
+margin_right = 258.0
+margin_bottom = 80.0
+rect_min_size = Vector2( 120, 80 )
+custom_fonts/font = ExtResource( 2 )
+text = "Join"
+
+[node name="server_browser" parent="CanvasLayer/Control" instance=ExtResource( 5 )]
+visible = false
+
 [connection signal="pressed" from="CanvasLayer/Control/SafeArea/VBoxContainer/HBoxContainer/sign_out" to="." method="_on_sign_out_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/SafeArea/VBoxContainer/CenterContainer/HBoxContainer2/host" to="." method="_on_host_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/SafeArea/VBoxContainer/CenterContainer/HBoxContainer2/join" to="." method="_on_join_pressed"]
+[connection signal="on_join" from="CanvasLayer/Control/server_browser" to="." method="_on_server_browser_on_join"]

@@ -147,11 +147,11 @@ func sign_out():
 	simple_delay.start()
 	yield(simple_delay, "timeout")
 	
-	if token == null:
-		emit_signal("failed", "failed sign out, no session!")
-		return
+	if token != null:
+		yield(_revoke_auth_code(), "completed")
 		
-	_revoke_auth_code()
+	emit_signal("sign_out_completed")
+	
 	
 func check_sign_in_status():
 	# just simple delay
@@ -274,6 +274,8 @@ func _get_auth_code():
 		
 		
 func _revoke_auth_code():
+	yield(get_tree(), "idle_frame")
+	
 	var headers = PoolStringArray([
 		"Content-Type: application/x-www-form-urlencoded",
 	])
@@ -283,17 +285,13 @@ func _revoke_auth_code():
 		url, headers, true, HTTPClient.METHOD_POST, ""
 	)
 	if error != OK:
-		emit_signal("failed", "An error occurred in the HTTP request with ERR Code: %s" % error)
 		return
 		
 	var response :Array = yield(http_request_revoke_token_from_auth,"request_completed")
 	if response[0] != HTTPRequest.RESULT_SUCCESS:
-		emit_signal("failed", "failed sign out, response not success!")
 		return
 		
 	_delete_tokens()
-	emit_signal("sign_out_completed")
-	
 	
 func _refresh_tokens() -> bool:
 	yield(get_tree(), "idle_frame")
