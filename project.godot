@@ -20,6 +20,11 @@ _global_script_classes=[ {
 "path": "res://data/BaseData.gd"
 }, {
 "base": "Node",
+"class": "CameraAimingData",
+"language": "GDScript",
+"path": "res://assets/rts-camera/CameraAimingData.gd"
+}, {
+"base": "Node",
 "class": "Credentials",
 "language": "GDScript",
 "path": "res://addons/google_auth/credentials.gd"
@@ -89,6 +94,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/random-name/random_names.gd"
 }, {
+"base": "Spatial",
+"class": "RtsCamera",
+"language": "GDScript",
+"path": "res://assets/rts-camera/rts_camera.gd"
+}, {
 "base": "Node",
 "class": "SaveLoad",
 "language": "GDScript",
@@ -107,6 +117,7 @@ _global_script_classes=[ {
 _global_script_class_icons={
 "AdmobConfig": "",
 "BaseData": "",
+"CameraAimingData": "",
 "Credentials": "",
 "GDUUID": "",
 "InputEventMultiScreenDrag": "",
@@ -121,6 +132,7 @@ _global_script_class_icons={
 "NetworkServer": "",
 "PlayerData": "",
 "RandomNameGenerator": "",
+"RtsCamera": "",
 "SaveLoad": "",
 "ServerAdvertiser": "res://addons/LANServerBroadcast/server_advertiser/server_advertiser.png",
 "ServerListener": "res://addons/LANServerBroadcast/server_listener/server_listener.png"

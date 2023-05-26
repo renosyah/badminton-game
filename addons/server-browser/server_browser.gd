@@ -5,10 +5,10 @@ const ITEM = preload("res://addons/server-browser/item/item.tscn")
 signal on_join(info)
 signal close
 
-onready var _item_holder = $SafeArea/VBoxContainer/ScrollContainer/VBoxContainer
-onready var _server_list = $SafeArea/VBoxContainer/ScrollContainer
-onready var _find_server = $SafeArea/VBoxContainer/Label
-onready var _error = $SafeArea/VBoxContainer/error
+onready var _item_holder = $VBoxContainer/ScrollContainer/VBoxContainer
+onready var _server_list = $VBoxContainer/ScrollContainer
+onready var _find_server = $VBoxContainer/Label
+onready var _error = $VBoxContainer/error
 
 onready var _server_listener = $server_listener
 

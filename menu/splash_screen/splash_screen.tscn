@@ -5,6 +5,9 @@
 
 [node name="splash_screen" type="Node"]
 
+[node name="Camera" type="Camera" parent="."]
+current = true
+
 [node name="enviroment" parent="." instance=ExtResource( 2 )]
 
 [node name="ui" parent="." instance=ExtResource( 1 )]

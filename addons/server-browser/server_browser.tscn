@@ -52,27 +52,28 @@ color = Color( 0, 0, 0, 0.882353 )
 [node name="server_listener" type="Node" parent="."]
 script = ExtResource( 5 )
 
-[node name="SafeArea" type="MarginContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
+
+[node name="SafeArea" type="MarginContainer" parent="VBoxContainer"]
+margin_right = 600.0
+margin_bottom = 120.0
+mouse_filter = 2
 script = ExtResource( 7 )
 
-[node name="VBoxContainer" type="VBoxContainer" parent="SafeArea"]
-margin_right = 600.0
-margin_bottom = 1024.0
-
-[node name="PanelContainer" type="ColorRect" parent="SafeArea/VBoxContainer"]
+[node name="PanelContainer" type="ColorRect" parent="VBoxContainer/SafeArea"]
 margin_right = 600.0
 margin_bottom = 120.0
 rect_min_size = Vector2( 0, 120 )
 mouse_filter = 2
 color = Color( 0.203922, 0.203922, 0.203922, 1 )
 
-[node name="HBoxContainer" type="HBoxContainer" parent="SafeArea/VBoxContainer/PanelContainer"]
-anchor_right = 1.0
-anchor_bottom = 1.0
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/SafeArea"]
+margin_right = 600.0
+margin_bottom = 120.0
 
-[node name="back" type="Button" parent="SafeArea/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="back" type="Button" parent="VBoxContainer/SafeArea/HBoxContainer"]
 margin_right = 100.0
 margin_bottom = 120.0
 rect_min_size = Vector2( 100, 100 )
@@ -82,7 +83,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ColorRect2" type="TextureRect" parent="SafeArea/VBoxContainer/PanelContainer/HBoxContainer/back"]
+[node name="ColorRect2" type="TextureRect" parent="VBoxContainer/SafeArea/HBoxContainer/back"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -98,13 +99,13 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="margin" type="CenterContainer" parent="SafeArea/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="margin" type="CenterContainer" parent="VBoxContainer/SafeArea/HBoxContainer"]
 margin_left = 104.0
 margin_right = 496.0
 margin_bottom = 120.0
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="SafeArea/VBoxContainer/PanelContainer/HBoxContainer/margin"]
+[node name="Label" type="Label" parent="VBoxContainer/SafeArea/HBoxContainer/margin"]
 margin_left = 142.0
 margin_top = 30.0
 margin_right = 249.0
@@ -115,7 +116,7 @@ text = "Join"
 align = 1
 valign = 1
 
-[node name="refresh" type="Button" parent="SafeArea/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="refresh" type="Button" parent="VBoxContainer/SafeArea/HBoxContainer"]
 margin_left = 500.0
 margin_right = 600.0
 margin_bottom = 120.0
@@ -126,7 +127,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ColorRect2" type="TextureRect" parent="SafeArea/VBoxContainer/PanelContainer/HBoxContainer/refresh"]
+[node name="ColorRect2" type="TextureRect" parent="VBoxContainer/SafeArea/HBoxContainer/refresh"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -142,7 +143,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ScrollContainer" type="ScrollContainer" parent="SafeArea/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
 visible = false
 margin_top = 84.0
 margin_right = 1024.0
@@ -150,11 +151,11 @@ margin_bottom = 582.0
 size_flags_vertical = 3
 scroll_horizontal_enabled = false
 
-[node name="VBoxContainer" type="VBoxContainer" parent="SafeArea/VBoxContainer/ScrollContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
 margin_right = 1024.0
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="SafeArea/VBoxContainer"]
+[node name="Label" type="Label" parent="VBoxContainer"]
 margin_top = 124.0
 margin_right = 600.0
 margin_bottom = 1024.0
@@ -165,7 +166,7 @@ text = "Finding server"
 align = 1
 valign = 1
 
-[node name="error" type="Label" parent="SafeArea/VBoxContainer"]
+[node name="error" type="Label" parent="VBoxContainer"]
 visible = false
 margin_top = 576.0
 margin_right = 600.0
@@ -178,7 +179,7 @@ align = 1
 valign = 1
 autowrap = true
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="SafeArea/VBoxContainer"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="VBoxContainer"]
 autoplay = "loading"
 anims/RESET = SubResource( 1 )
 anims/loading = SubResource( 2 )
@@ -186,5 +187,5 @@ anims/loading = SubResource( 2 )
 [connection signal="error_listening" from="server_listener" to="." method="_on_server_listener_error_listening"]
 [connection signal="new_server" from="server_listener" to="." method="_on_server_listener_new_server"]
 [connection signal="remove_server" from="server_listener" to="." method="_on_server_listener_remove_server"]
-[connection signal="pressed" from="SafeArea/VBoxContainer/PanelContainer/HBoxContainer/back" to="." method="_on_back_pressed"]
-[connection signal="pressed" from="SafeArea/VBoxContainer/PanelContainer/HBoxContainer/refresh" to="." method="_on_refresh_pressed"]
+[connection signal="pressed" from="VBoxContainer/SafeArea/HBoxContainer/back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="VBoxContainer/SafeArea/HBoxContainer/refresh" to="." method="_on_refresh_pressed"]

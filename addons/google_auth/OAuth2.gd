@@ -8,11 +8,6 @@ signal profile_info
 signal sign_out_completed
 signal failed(message)
 
-# private signal
-signal _on_get_code_from_url_query(has_code)
-signal _on_is_token_valid(is_valid)
-signal _on_refresh_tokens(is_success)
-
 const PORT := 31419
 const LOCAL_BINDING :String = "127.0.0.1"
 const AUTH_SERVER :String = "https://accounts.google.com/o/oauth2/v2/auth"
@@ -90,8 +85,6 @@ func _process(delta):
 			connection.put_data(_load_HTML("res://addons/google_auth/display_page.csv").to_ascii())
 			redirect_server.stop()
 	
-signal _on_get_token_from_auth(is_success)
-	
 func _get_token_from_auth(auth_code :String):
 	var headers = PoolStringArray([
 		"Content-Type: application/x-www-form-urlencoded",
@@ -115,20 +108,22 @@ func _get_token_from_auth(auth_code :String):
 	var body = "&".join(PoolStringArray(body_parts))
 	
 	var error = http_request_token_from_auth.request(
-		TOKEN_REQ_SERVER, headers, HTTPClient.METHOD_POST, body
+		TOKEN_REQ_SERVER, headers, true, HTTPClient.METHOD_POST, body
 	)
 	if error != OK:
-		emit_signal("_on_get_token_from_auth", false)
 		emit_signal("failed", "An error occurred in the HTTP request with ERR Code: %s" % error)
 		return
 		
 	var result = yield(http_request_token_from_auth, "request_completed")
 	if result[0] != HTTPRequest.RESULT_SUCCESS:
-		emit_signal("_on_get_token_from_auth", false)
 		emit_signal("failed", "failed get token, response not success!")
 		return
 		
-	var response_body :Dictionary = JSON.parse_string((result[3] as PoolByteArray).get_string_from_utf8())
+	var json :JSONParseResult = JSON.parse((result[3] as PoolByteArray).get_string_from_utf8())
+	if json.error != OK:
+		return
+		
+	var response_body :Dictionary = json.result
 	
 	if response_body.has("access_token"):
 		token = response_body["access_token"]
@@ -140,7 +135,6 @@ func _get_token_from_auth(auth_code :String):
 		return
 		
 	_save_tokens()
-	emit_signal("_on_get_token_from_auth", true)
 	emit_signal("sign_in_completed")
 	
 func sign_in():
@@ -168,27 +162,24 @@ func check_sign_in_status():
 	
 	_load_tokens()
 	
-	_get_code_from_url_query()
-	var result = yield(self, "_on_get_code_from_url_query")
-	if result[0]:
+	var result = yield(_get_code_from_url_query(), "completed")
+	if result:
 		return
 		
 	if token == null:
 		emit_signal("no_session")
 		return
 		
-	_is_token_valid()
-	var token_valid = yield(self, "_on_is_token_valid")
-	if not token_valid[0]:
+	var token_valid = yield(_is_token_valid(), "completed")
+	if not token_valid:
 		
 		# try refresh if not valid
 		if refresh_token == null:
 			_failed_sign_in_exipired()
 			return
 			
-		_refresh_tokens()
-		var ok = yield(self, "_on_refresh_tokens")
-		if not ok[0]:
+		var ok = yield(_refresh_tokens(), "completed")
+		if not ok:
 			_failed_sign_in_exipired()
 			return
 			
@@ -200,7 +191,9 @@ func _failed_sign_in_exipired():
 	emit_signal("sign_in_expired")
 	
 	
-func _get_code_from_url_query():
+func _get_code_from_url_query() -> bool:
+	yield(get_tree(), "idle_frame")
+	
 	if is_web_app:
 		var auth_code = JavaScript.eval("""
 			var url_string = window.location.href;
@@ -208,31 +201,25 @@ func _get_code_from_url_query():
 			url.searchParams.get('code');
 		""")
 		if auth_code == null:
-			emit_signal("_on_get_code_from_url_query", false)
-			return
+			return false
 			
 		if str(auth_code) == "<null>":
-			emit_signal("_on_get_code_from_url_query", false)
-			return
+			return false
 			
 		if str(auth_code) == redirect_code:
-			emit_signal("_on_get_code_from_url_query", false)
-			return
+			return false
 			
 		redirect_code = str(auth_code)
 		_save_tokens()
-		
-		_get_token_from_auth(redirect_code)
-		yield(self, "_on_get_token_from_auth")
+		yield(_get_token_from_auth(redirect_code), "completed")
 		
 		JavaScript.eval("""
 			window.history.replaceState({}, document.title, "/");
 		""")
 		
-		emit_signal("_on_get_code_from_url_query", true)
-		return
+		return true
 		
-	emit_signal("_on_get_code_from_url_query", false)
+	return false
 
 func _get_auth_code():
 	# for web
@@ -293,7 +280,7 @@ func _revoke_auth_code():
 	
 	var url :String = TOKEN_REVOKE_SERVER + "?token=%s" % token
 	var error = http_request_revoke_token_from_auth.request(
-		url, headers, HTTPClient.METHOD_POST, ""
+		url, headers, true, HTTPClient.METHOD_POST, ""
 	)
 	if error != OK:
 		emit_signal("failed", "An error occurred in the HTTP request with ERR Code: %s" % error)
@@ -308,7 +295,9 @@ func _revoke_auth_code():
 	emit_signal("sign_out_completed")
 	
 	
-func _refresh_tokens():
+func _refresh_tokens() -> bool:
+	yield(get_tree(), "idle_frame")
+	
 	var headers = PoolStringArray([
 		"Content-Type: application/x-www-form-urlencoded",
 	])
@@ -322,31 +311,33 @@ func _refresh_tokens():
 	var body = "&".join(body_parts)
 	
 	var error = http_request_refresh_tokens.request(
-		TOKEN_REQ_SERVER, headers, HTTPClient.METHOD_POST, body
+		TOKEN_REQ_SERVER, headers, true, HTTPClient.METHOD_POST, body
 	)
 	if error != OK:
-		emit_signal("_on_refresh_tokens", false)
-		return
+		return false
 	
 	var response :Array = yield(http_request_refresh_tokens, "request_completed")
 	if response[0] != HTTPRequest.RESULT_SUCCESS:
-		emit_signal("_on_refresh_tokens", false)
-		return
+		return false
 	
-	var response_body :Dictionary = JSON.parse_string((response[3] as PoolByteArray).get_string_from_utf8())
+	var json :JSONParseResult = JSON.parse((response[3] as PoolByteArray).get_string_from_utf8())
+	if json.error != OK:
+		return false
+		
+	var response_body :Dictionary = json.result
 	
 	if response_body.has("access_token"):
 		token = response_body["access_token"]
 		_save_tokens()
-		emit_signal("_on_refresh_tokens", true)
-		return
+		return true
 		
 	else:
-		emit_signal("_on_refresh_tokens", false)
-		return
+		return false
 		
 	
-func _is_token_valid():
+func _is_token_valid() -> bool :
+	yield(get_tree(), "idle_frame")
+	
 	var headers = PoolStringArray([
 		"Content-Type: application/x-www-form-urlencoded"
 	])
@@ -354,27 +345,29 @@ func _is_token_valid():
 	var body = "access_token=%s" % token
 	
 	var error = http_request_validate_tokens.request(
-		TOKEN_REQ_SERVER + "info", headers, HTTPClient.METHOD_POST, body
+		TOKEN_REQ_SERVER + "info", headers, true, HTTPClient.METHOD_POST, body
 	)
 	if error != OK:
-		emit_signal("_on_is_token_valid", false)
+		return false
 	
 	var response :Array = yield(http_request_validate_tokens,"request_completed")
 	if response[0] != HTTPRequest.RESULT_SUCCESS:
-		emit_signal("_on_is_token_valid", false)
+		return false
 	
-	var response_body :Dictionary = JSON.parse_string((response[3] as PoolByteArray).get_string_from_utf8())
+	var json :JSONParseResult = JSON.parse((response[3] as PoolByteArray).get_string_from_utf8())
+	if json.error != OK:
+		return false
+		
+	var response_body :Dictionary = json.result
 	
 	if response_body.has("expires_in"):
 		var expiration = response_body["expires_in"]
 		if int(expiration) > 0:
-			emit_signal("_on_is_token_valid", true)
-			return
+			return true
 	else:
-		emit_signal("_on_is_token_valid", false)
-		return
+		return false
 		
-	emit_signal("_on_is_token_valid", false)
+	return false
 	
 func get_profile_info():
 	if token == null:
@@ -387,7 +380,7 @@ func get_profile_info():
 		"Accept: application/json"
 	]
 	
-	var error = http_request_profile_info.request(request_url, PoolStringArray(headers))
+	var error = http_request_profile_info.request(request_url, PoolStringArray(headers), true)
 	if error != OK:
 		emit_signal("failed", "ERROR OCCURED @ FUNC get_LiveBroadcastResource() : %s" % error)
 		return
@@ -396,8 +389,13 @@ func get_profile_info():
 	if response[0] != HTTPRequest.RESULT_SUCCESS:
 		emit_signal("failed", "failed get profile, response not success!")
 		return
-	
-	var response_body :Dictionary = JSON.parse_string((response[3] as PoolByteArray).get_string_from_utf8())
+		
+	var json :JSONParseResult = JSON.parse((response[3] as PoolByteArray).get_string_from_utf8())
+	if json.error != OK:
+		emit_signal("failed", "failed get profile, response not success!")
+		return
+		
+	var response_body :Dictionary = json.result
 	
 	emit_signal("profile_info", OAuth2UserInfo.new(response_body))
 	
