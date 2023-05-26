@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=2]
+
+[sub_resource type="ProceduralSky" id=2]
+radiance_size = 0
+sky_top_color = Color( 0.129412, 0.690196, 1, 1 )
+sky_horizon_color = Color( 0.372549, 0.721569, 1, 1 )
+ground_bottom_color = Color( 0, 0.431373, 1, 1 )
+ground_horizon_color = Color( 0.372549, 0.721569, 1, 1 )
+texture_size = 0
+
+[sub_resource type="Environment" id=1]
+background_mode = 2
+background_sky = SubResource( 2 )
+fog_enabled = true
+fog_color = Color( 0.152941, 0.47451, 0.792157, 1 )
+fog_sun_color = Color( 1, 0.901961, 0.701961, 1 )
+fog_depth_curve = 0.637279
+dof_blur_far_distance = 25.0
+
+[node name="enviroment" type="Node"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 1 )
+
+[node name="DirectionalLight" type="DirectionalLight" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.307739, 0.951471, 0, -0.951471, 0.307739, 0, 0, 0 )
+shadow_enabled = true
+directional_shadow_mode = 0
