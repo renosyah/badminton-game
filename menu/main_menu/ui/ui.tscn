@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://menu/main_menu/ui/ui.gd" type="Script" id=1]
+[ext_resource path="res://assets/ui/fonts/montserrat_eb_16.tres" type="DynamicFont" id=2]
+[ext_resource path="res://addons/SafeArea/SafeArea.gd" type="Script" id=3]
 
 [node name="ui" type="Control"]
 anchor_right = 1.0
@@ -14,3 +16,57 @@ script = ExtResource( 1 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
+
+[node name="SafeArea" type="MarginContainer" parent="CanvasLayer/Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource( 3 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control/SafeArea"]
+margin_right = 600.0
+margin_bottom = 1024.0
+mouse_filter = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control/SafeArea/VBoxContainer"]
+margin_right = 600.0
+margin_bottom = 80.0
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/SafeArea/VBoxContainer/HBoxContainer"]
+margin_right = 10.0
+margin_bottom = 80.0
+rect_min_size = Vector2( 10, 0 )
+
+[node name="sign_out" type="Button" parent="CanvasLayer/Control/SafeArea/VBoxContainer/HBoxContainer"]
+margin_left = 14.0
+margin_right = 134.0
+margin_bottom = 80.0
+rect_min_size = Vector2( 120, 80 )
+custom_fonts/font = ExtResource( 2 )
+text = "Sign out"
+
+[node name="MarginContainer2" type="MarginContainer" parent="CanvasLayer/Control/SafeArea/VBoxContainer/HBoxContainer"]
+margin_left = 138.0
+margin_right = 158.0
+margin_bottom = 80.0
+rect_min_size = Vector2( 20, 0 )
+
+[node name="Label" type="Label" parent="CanvasLayer/Control/SafeArea/VBoxContainer/HBoxContainer"]
+margin_left = 162.0
+margin_top = 26.0
+margin_right = 251.0
+margin_bottom = 54.0
+custom_constants/shadow_offset_x = 1
+custom_constants/line_spacing = 1
+custom_constants/shadow_offset_y = 1
+custom_constants/shadow_as_outline = 1
+custom_fonts/font = ExtResource( 2 )
+text = "Hello : "
+
+[node name="MarginContainer3" type="MarginContainer" parent="CanvasLayer/Control/SafeArea/VBoxContainer/HBoxContainer"]
+margin_left = 255.0
+margin_right = 265.0
+margin_bottom = 80.0
+rect_min_size = Vector2( 10, 0 )
+
+[connection signal="pressed" from="CanvasLayer/Control/SafeArea/VBoxContainer/HBoxContainer/sign_out" to="." method="_on_sign_out_pressed"]

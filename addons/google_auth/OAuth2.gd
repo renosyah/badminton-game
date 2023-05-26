@@ -480,7 +480,7 @@ func _delete_tokens():
 	if not file.file_exists(SAVE_PATH):
 		return
 		
-	dir.remove_absolute(SAVE_PATH)
+	dir.remove(SAVE_PATH)
 	
 func _load_HTML(path :String) -> String:
 	var file = File.new()
