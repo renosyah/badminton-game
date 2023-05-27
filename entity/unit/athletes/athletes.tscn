@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://entity/unit/athletes/athletes.gd" type="Script" id=1]
+[ext_resource path="res://entity/racket/racket.tscn" type="PackedScene" id=2]
 
 [sub_resource type="CapsuleMesh" id=1]
 mid_height = 2.0
@@ -17,8 +18,66 @@ points = PoolVector3Array( 0.0928188, 0.976993, 1.18587, -0.0928905, -0.97699, -
 height = 3.74281
 radius = 2.16271
 
+[sub_resource type="Animation" id=6]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("racket:translation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 1.52545, 0, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("racket:rotation_degrees")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 0, 0, -15.324 ) ]
+}
+
+[sub_resource type="Animation" id=7]
+resource_name = "swing_racket"
+length = 0.6
+tracks/0/type = "value"
+tracks/0/path = NodePath("racket:translation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.3, 0.4, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector3( 1.52545, 0, 0 ), Vector3( 1.52545, 0.974247, 1.72482 ), Vector3( 1.52545, 0.974247, 1.72482 ), Vector3( 1.52545, -0.349766, -1.41908 ), Vector3( 1.52545, 0, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("racket:rotation_degrees")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.3, 0.4, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector3( 0, 0, -15.324 ), Vector3( 0, 0, -15.324 ), Vector3( 18.338, -4.75408e-07, -15.324 ), Vector3( -44.277, -1.78035e-06, -15.324 ), Vector3( 0, 0, -15.324 ) ]
+}
+
 [node name="athletes" type="KinematicBody"]
 script = ExtResource( 1 )
+
+[node name="racket" parent="." instance=ExtResource( 2 )]
+transform = Transform( 0.964447, 0.264277, 0, -0.264277, 0.964447, 0, 0, 0, 1, 1.52545, 0, 0 )
 
 [node name="Spatial" type="Spatial" parent="."]
 
@@ -47,5 +106,9 @@ monitorable = false
 [node name="CollisionShape" type="CollisionShape" parent="service_area"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.578074, 0 )
 shape = SubResource( 5 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/RESET = SubResource( 6 )
+anims/swing_racket = SubResource( 7 )
 
 [connection signal="body_entered" from="service_area" to="." method="_on_service_area_body_entered"]

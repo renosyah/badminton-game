@@ -8,7 +8,7 @@
 points = PoolVector3Array( -24.0562, -1.23742, -33.8494, 24.3758, 1.13675, 34.0517, -24.0562, 1.13675, 34.0517, 24.3758, -1.23742, 34.0517, 24.3758, 1.13675, -33.8494, -24.0562, -1.23742, 34.0517, -24.0562, 1.13675, -33.8494, 24.3758, -1.23742, -33.8494 )
 
 [sub_resource type="BoxShape" id=7]
-extents = Vector3( 23.7765, 6.96669, 11.3486 )
+extents = Vector3( 23.7765, 6.96669, 15.7712 )
 
 [sub_resource type="ConvexPolygonShape" id=10]
 points = PoolVector3Array( -21.4645, -9.64465, -0.593338, 21.4645, 1.00615, 0.660066, 21.4645, -9.64465, 0.660066, 21.4645, 1.00615, -0.593338, -21.4645, 1.00615, 0.660066, 21.4645, -9.64465, -0.593338, -21.4645, -9.64465, 0.660066, -21.4645, 1.00615, -0.593338 )
@@ -49,7 +49,7 @@ input_ray_pickable = false
 monitorable = false
 
 [node name="CollisionShape" type="CollisionShape" parent="side_team_1"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.54568, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.54568, -3.0236 )
 shape = SubResource( 7 )
 
 [node name="side_team_2" type="Area" parent="."]
@@ -60,7 +60,7 @@ input_ray_pickable = false
 monitorable = false
 
 [node name="CollisionShape" type="CollisionShape" parent="side_team_2"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.54568, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.54568, 3.19973 )
 shape = SubResource( 7 )
 
 [node name="net_area" type="Area" parent="."]

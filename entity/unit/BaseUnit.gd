@@ -11,7 +11,6 @@ export var move_to_completed :bool = true
 export var move_to :Vector3
 
 var _velocity :Vector3 = Vector3.ZERO
-var _up_direction :Vector3 = Vector3.UP
 
 var _sound :AudioStreamPlayer3D
 onready var _gravity :float = ProjectSettings.get_setting("physics/3d/default_gravity")
@@ -49,12 +48,9 @@ func master_moving(delta :float) -> void:
 		move_direction = Vector3.ZERO
 		
 	_velocity = move_direction * speed
-	_velocity.y = 0
 	
 	if not is_on_floor():
 		_velocity.y = -_gravity
-	else:
-		_up_direction = get_floor_normal()
 	
 	if _velocity != Vector3.ZERO:
 		_velocity = move_and_slide(_velocity, Vector3.UP)

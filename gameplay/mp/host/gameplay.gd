@@ -8,8 +8,10 @@ var service_from :Athletes
 onready var reset_match_delay = $reset_match_delay
 
 func _ready():
-	athletes_team__1.translation = _arena.get_side_team(1)
-	athletes_team__2.translation = _arena.get_side_team(2)
+	var pos_1 = _arena.get_side_team(1)
+	var pos_2 = _arena.get_side_team(2)
+	athletes_team__1.translation = Vector3(pos_1.x, 3, pos_1.z)
+	athletes_team__2.translation = Vector3(pos_2.x, 3, pos_2.z)
 	
 	athletes_team__1.connect("on_projectile_in_range", self, "_on_projectile_in_athletes_range")
 	athletes_team__2.connect("on_projectile_in_range", self, "_on_projectile_in_athletes_range")
@@ -28,6 +30,11 @@ func _ready():
 	reset_match_delay.start()
 	
 func _on_reset_match_delay_timeout():
+	var pos_1 = _arena.get_side_team(1)
+	var pos_2 = _arena.get_side_team(2)
+	athletes_team__1.translation = Vector3(pos_1.x, 3, pos_1.z)
+	athletes_team__2.translation = Vector3(pos_2.x, 3, pos_2.z)
+	
 	shuttlecock.translation = service_from.translation
 	
 func _on_projectile_enter_area(projectile :BaseProjectile, area :int):
@@ -74,20 +81,24 @@ func _on_shuttlecock_land(_shuttlecock :BaseProjectile):
 	reset_match_delay.start()
 	
 func _on_projectile_in_athletes_range(athletes :Athletes, _shuttlecock :BaseProjectile):
+	_shuttlecock.stop()
+	
 	athletes.look_at(_arena.translation, Vector3.UP)
-	
-	_shuttlecock.sender_team = athletes.team
-	shuttlecock.random_offset = rand_range(15, 45)
-	_shuttlecock.speed = rand_range(12, 32)
-	_shuttlecock.target = _arena.get_side_team(_get_opposite_team(_shuttlecock.sender_team))
-	_shuttlecock.target.y = 0.5
-	_shuttlecock.launch()
-	
 	athletes.move_direction = Vector3.ZERO
 	athletes.move_to_completed = true
 	
+	athletes.swing_racket()
+	yield(athletes, "racket_swung")
+	
 	_sound.stream = preload("res://assets/sound/click.wav")
 	_sound.play()
+	
+	_shuttlecock.sender_team = athletes.team
+	_shuttlecock.random_offset = rand_range(5, 25)
+	_shuttlecock.speed = rand_range(22, 32)
+	_shuttlecock.target = _arena.get_side_team(_get_opposite_team(_shuttlecock.sender_team))
+	_shuttlecock.target.y = 0.5
+	_shuttlecock.launch()
 	
 #func _process(delta):
 #	var move_direction = _ui.get_move_direction()
