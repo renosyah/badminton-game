@@ -6,7 +6,7 @@
 
 [sub_resource type="SpatialMaterial" id=1]
 flags_unshaded = true
-albedo_color = Color( 0.541176, 0.501961, 0.501961, 1 )
+albedo_color = Color( 0.341176, 0.341176, 0.341176, 1 )
 
 [sub_resource type="SpatialMaterial" id=2]
 flags_unshaded = true
@@ -21,13 +21,13 @@ _data = [ Vector2( 0.0333333, 0.981818 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 
 flags_unshaded = true
 albedo_color = Color( 1, 1, 1, 0.466667 )
 
-[node name="shuttlecock" type="KinematicBody"]
+[node name="shuttlecock" type="StaticBody"]
 collision_layer = 2
 collision_mask = 0
 script = ExtResource( 2 )
 
 [node name="MeshInstance" type="MeshInstance" parent="."]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.22824, -0.176071 )
+transform = Transform( 1.8, 0, 0, 0, -1.09278e-07, -1.8, 0, 2.5, -7.86805e-08, 0, 0.22824, -0.176071 )
 mesh = ExtResource( 1 )
 material/0 = SubResource( 1 )
 material/1 = SubResource( 2 )
@@ -37,8 +37,8 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.197111, 0 )
 shape = SubResource( 3 )
 
 [node name="TrailRender" parent="." instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.244143, 0.462023 )
-width = 0.3
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.244143, 1.14989 )
+width = 0.8
 width_curve = SubResource( 4 )
-max_points = 15
+max_points = 25
 material = SubResource( 5 )

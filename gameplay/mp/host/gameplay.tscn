@@ -1,6 +1,25 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://gameplay/mp/host/gameplay.gd" type="Script" id=1]
+[ext_resource path="res://entity/unit/athletes/athletes.tscn" type="PackedScene" id=2]
 
 [node name="gameplay" type="Node"]
 script = ExtResource( 1 )
+
+[node name="athletes_team_1" parent="." instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -13.9942 )
+team = 1
+speed = 24
+is_bot = true
+
+[node name="athletes_team_2" parent="." instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 4.82915 )
+team = 2
+speed = 24
+is_bot = true
+
+[node name="reset_match_delay" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[connection signal="timeout" from="reset_match_delay" to="." method="_on_reset_match_delay_timeout"]

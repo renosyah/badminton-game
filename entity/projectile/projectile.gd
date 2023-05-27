@@ -1,4 +1,4 @@
-extends KinematicBody
+extends StaticBody
 class_name BaseProjectile
 
 signal land(projectile)
@@ -7,8 +7,9 @@ export var speed :int = 12
 export var target :Vector3
 export var margin :int = 1
 export var curve :bool = true
-export var accuration :float = 1.0
 export var is_static :bool = false
+export var sender_team :int = 1
+export var random_offset :float = 0
 
 var _trajectory_aim :Vector3
 
@@ -25,6 +26,10 @@ puppet var _puppet_translation :Vector3
 func _network_timmer_timeout() -> void:
 	_is_online = _is_network_running()
 	
+	if _is_master and _is_online:
+		rset_unreliable("_puppet_translation", global_transform.origin)
+		rset_unreliable("_puppet_rotation", global_transform.basis.get_euler())
+		
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	_setup_network_timer()
@@ -37,10 +42,7 @@ func launch():
 	if not _is_master:
 		return
 		
-	var offset = (1 - accuration)
-	var rand_offset = rand_range(-offset, offset) + 0.5
-	target = target + (Vector3(1, 0, 1) * rand_offset)
-	
+	target = target + Vector3(1,0,1) * rand_range(-random_offset, random_offset)
 	_trajectory_aim = target
 	if curve:
 		_trajectory_aim.y = target.y + translation.distance_to(target)
@@ -85,8 +87,16 @@ func puppet_moving(delta :float) -> void:
 	rotation.y = lerp_angle(rotation.y, _puppet_rotation.y, 5 * delta)
 	rotation.z = lerp_angle(rotation.z, _puppet_rotation.z, 5 * delta)
 	
+func stop():
+	if not _is_master:
+		return
+		
+	set_process(false)
+	
+	
 remotesync func _on_land():
 	emit_signal("land", self)
+	
 	
 ############################################################
 # multiplayer func

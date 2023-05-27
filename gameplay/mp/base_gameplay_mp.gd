@@ -9,6 +9,7 @@ func _ready():
 	init_connection_watcher()
 	
 	setup_enviroment()
+	setup_sound()
 	setup_camera()
 	setup_arena()
 	setup_shuttlecocks()
@@ -29,29 +30,19 @@ func on_back_pressed():
 	
 ################################################################
 # shuttlecock
-
-var shuttlecocks :Array = []
+var shuttlecock :BaseProjectile
 
 func setup_shuttlecocks():
-	var shuttlecock_scnene = preload("res://entity/projectile/shuttlecock/shuttlecock.tscn")
+	shuttlecock = preload("res://entity/projectile/shuttlecock/shuttlecock.tscn").instance()
+	shuttlecock.name = "shuttlecock"
+	shuttlecock.set_network_master(Network.PLAYER_HOST_ID)
+	shuttlecock.connect("land", self, "_on_shuttlecock_land")
+	add_child(shuttlecock)
 	
-	for i in 4:
-		var shuttlecock = shuttlecock_scnene.instance()
-		shuttlecock.name = "shuttlecock_%s" % i
-		shuttlecock.set_network_master(Network.PLAYER_HOST_ID)
-		shuttlecock.connect("land", self, "_on_shuttlecock_land")
-		add_child(shuttlecock)
-		
-		shuttlecock.translation.z = 20
-		shuttlecock.speed = rand_range(24, 45)
-		shuttlecock.target = Vector3(shuttlecock.translation.x, 4, -shuttlecock.translation.z)
-		shuttlecock.launch()
-		
 	
 func _on_shuttlecock_land(_shuttlecock :BaseProjectile):
-	_shuttlecock.target.z = -_shuttlecock.target.z
-	_shuttlecock.target.x = rand_range(-20, 20)
-	_shuttlecock.launch()
+	# just for test
+	pass
 	
 ################################################################
 # arena
@@ -60,14 +51,28 @@ var _arena :Arena
 func setup_arena():
 	_arena = preload("res://map/arena.tscn").instance()
 	_arena.connect("on_projectile_enter_area", self, "_on_projectile_enter_area")
-	_arena.connect("on_projectile_exit_area", self, "_on_projectile_exit_area")
+	_arena.connect("on_projectile_hit_net", self, "_on_projectile_hit_net")
 	add_child(_arena)
 	
 func _on_projectile_enter_area(projectile :BaseProjectile, area :int):
-	print("projectile enter on %s" % area)
+	# print("projectile %s enter on %s" % [projectile.name, area])
+	# just for test
+	pass
 	
-func _on_projectile_exit_area(projectile :BaseProjectile, area :int):
-	print("projectile exit %s" % area)
+	
+func _on_projectile_hit_net(projectile :BaseProjectile):
+	#print("projectile %s hit net" % projectile.name)
+	pass
+	
+	
+func _get_opposite_team(team :int) -> int:
+	match (team):
+		1:
+			return 2
+		2:
+			return 1
+			
+	return 0
 	
 ################################################################
 # team cameras
@@ -80,16 +85,23 @@ func setup_camera():
 	
 	_camera_team_1 = camera_scene.instance()
 	add_child(_camera_team_1)
-	_camera_team_1.translation.z = 60
-	_camera_team_1.translation.y = 45
+	_camera_team_1.translation.z = 40
+	_camera_team_1.translation.y = 35
 	
 	_camera_team_2 = camera_scene.instance()
 	add_child(_camera_team_2)
-	_camera_team_2.translation.z = -60
-	_camera_team_2.translation.y = 45
+	_camera_team_2.translation.z = -40
+	_camera_team_2.translation.y = 35
 	_camera_team_2.rotation_degrees.y = 180
 	
-	_camera_team_1.camera.current = true
+func _get_team_camera(team :int) -> FixCamera:
+	match (team):
+		1:
+			return _camera_team_1
+		2:
+			return _camera_team_2
+			
+	return _camera_team_1
 	
 ################################################################
 # directional light
@@ -100,8 +112,17 @@ func setup_enviroment():
 	add_child(_environment)
 	
 ################################################################
+# sound
+
+var _sound :AudioStreamPlayer
+
+func setup_sound():
+	_sound = AudioStreamPlayer.new()
+	add_child(_sound)
+
+################################################################
 # ui
-var _ui :Control
+var _ui :UiMp
 
 func setup_ui():
 	_ui = preload("res://gameplay/mp/ui/ui.tscn").instance()
