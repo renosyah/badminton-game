@@ -3,6 +3,8 @@ class_name BaseGameplayMp
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	randomize()
+	
 	get_tree().set_quit_on_go_back(false)
 	get_tree().set_auto_accept_quit(false)
 	
@@ -12,6 +14,7 @@ func _ready():
 	setup_sound()
 	setup_camera()
 	setup_arena()
+	setup_score_panel()
 	setup_shuttlecocks()
 	setup_ui()
 	
@@ -27,6 +30,59 @@ func _notification(what):
 		
 func on_back_pressed():
 	on_exit_game_session()
+	
+################################################################
+# scores
+
+var _score_panel :ScorePanel
+
+func setup_score_panel():
+	_score_panel = preload("res://assets/score_panel/score_panel.tscn").instance()
+	_score_panel.connect("time_up", self, "_time_up")
+	add_child(_score_panel)
+	
+	_score_panel.time_remaining = 60
+	_score_panel.start_timer()
+
+var team_1_score: int = 0
+var team_2_score: int = 0
+
+func add_score(team :int):
+	match (team):
+		1:
+			team_1_score += 1
+		2:
+			team_2_score += 1
+			
+	update_score()
+
+func update_score():
+	if not is_server():
+		return
+		
+	rpc("_update_score", team_1_score, team_2_score)
+	
+remotesync func _update_score(_team_1_score, _team_2_score :int):
+	if not is_server():
+		team_1_score = _team_1_score
+		team_2_score = _team_2_score
+		
+	display_score()
+	
+func display_score():
+	_score_panel.show_score(team_1_score, team_2_score)
+	
+func _time_up():
+	if not is_server():
+		return
+		
+	rpc("_notify_round_is_finish")
+	
+remotesync func _notify_round_is_finish():
+	# test, just restart timer
+	
+	_score_panel.time_remaining = 60
+	_score_panel.start_timer()
 	
 ################################################################
 # shuttlecock

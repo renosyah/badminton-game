@@ -11,6 +11,7 @@ onready var reset_match_delay = $reset_match_delay
 
 func _ready():
 	_camera.rotate_to = 0
+	_score_panel.rotate_to = 0
 	
 	athletes_team__1a.set_network_master(Network.PLAYER_HOST_ID)
 	athletes_team__1b.set_network_master(Network.PLAYER_HOST_ID)
@@ -67,14 +68,12 @@ func _on_projectile_enter_area(projectile :BaseProjectile, area :int):
 		at.move_to_completed = false
 		at.move_to = projectile.target
 		
-		
 	if area == 2 and projectile.sender_team != 2:
 		var b = [athletes_team__2a, athletes_team__2b]
 		var at = b[rand_range(0, 2)]
 		at.move_to_completed = false
 		at.move_to = projectile.target
-		
-		
+
 func _on_projectile_hit_net(projectile :BaseProjectile):
 	projectile.stop()
 	_on_shuttlecock_land(projectile)
@@ -98,7 +97,7 @@ func _on_shuttlecock_land(_shuttlecock :BaseProjectile):
 		var at = a[rand_range(0, 2)]
 		service_from = at
 		if _shuttlecock.sender_team == 2:
-			_ui.add_score(2)
+			.add_score(2)
 		
 	if _arena.is_side_have_projectile(2):
 		is_in = true
@@ -106,11 +105,10 @@ func _on_shuttlecock_land(_shuttlecock :BaseProjectile):
 		var at = b[rand_range(0, 2)]
 		service_from = at
 		if _shuttlecock.sender_team == 1:
-			_ui.add_score(1)
-		
+			.add_score(1)
 		
 	if not is_in:
-		_ui.add_score(_get_opposite_team(_shuttlecock.sender_team))
+		.add_score(_get_opposite_team(_shuttlecock.sender_team))
 		
 	reset_match_delay.start()
 	

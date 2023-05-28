@@ -1,10 +1,9 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://addons/joystick/virtual_joystick.tscn" type="PackedScene" id=1]
 [ext_resource path="res://gameplay/mp/ui/ui.gd" type="Script" id=2]
 [ext_resource path="res://assets/ui/fps_ping_displayer/fps_ping_displayer.tscn" type="PackedScene" id=3]
 [ext_resource path="res://addons/SafeArea/SafeArea.gd" type="Script" id=4]
-[ext_resource path="res://assets/ui/fonts/montserrat_eb_32.tres" type="DynamicFont" id=5]
 
 [node name="ui" type="Control"]
 anchor_right = 1.0
@@ -35,28 +34,7 @@ script = ExtResource( 4 )
 margin_right = 600.0
 margin_bottom = 1024.0
 
-[node name="MarginContainer3" type="MarginContainer" parent="CanvasLayer/Control/SafeArea/VBoxContainer"]
-margin_right = 600.0
-margin_bottom = 20.0
-rect_min_size = Vector2( 0, 20 )
-
-[node name="score" type="Label" parent="CanvasLayer/Control/SafeArea/VBoxContainer"]
-margin_top = 24.0
-margin_right = 600.0
-margin_bottom = 64.0
-custom_colors/font_outline_modulate = Color( 0, 0, 0, 1 )
-custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
-custom_constants/shadow_offset_x = 1
-custom_constants/line_spacing = 1
-custom_constants/shadow_offset_y = 1
-custom_constants/shadow_as_outline = 1
-custom_fonts/font = ExtResource( 5 )
-text = "Team 1 : 0 - Team 2 : 0"
-align = 1
-valign = 1
-
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/SafeArea/VBoxContainer"]
-margin_top = 68.0
 margin_right = 600.0
 margin_bottom = 936.0
 size_flags_vertical = 3

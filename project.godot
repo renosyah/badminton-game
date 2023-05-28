@@ -134,6 +134,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/save_load/save_load.gd"
 }, {
+"base": "Spatial",
+"class": "ScorePanel",
+"language": "GDScript",
+"path": "res://assets/score_panel/score_panel.gd"
+}, {
 "base": "Node",
 "class": "ServerAdvertiser",
 "language": "GDScript",
@@ -180,6 +185,7 @@ _global_script_class_icons={
 "PlayerData": "",
 "RandomNameGenerator": "",
 "SaveLoad": "",
+"ScorePanel": "",
 "ServerAdvertiser": "res://addons/LANServerBroadcast/server_advertiser/server_advertiser.png",
 "ServerListener": "res://addons/LANServerBroadcast/server_listener/server_listener.png",
 "UiMp": "",
