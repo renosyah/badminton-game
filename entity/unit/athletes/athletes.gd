@@ -1,14 +1,19 @@
 extends BaseUnit
 class_name Athletes
 
+export var color :Color = Color.white
+
 signal racket_swung
 signal on_projectile_in_range(athletes, projectile)
 
 onready var animation_player = $AnimationPlayer
+onready var mesh_instance = $Spatial/MeshInstance
+onready var mesh_material :SpatialMaterial = mesh_instance.get_surface_material(0).duplicate()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	mesh_material.albedo_color = color
+	mesh_instance.set_surface_material(0, mesh_material)
 
 func master_moving(delta :float) -> void:
 	.master_moving(delta)

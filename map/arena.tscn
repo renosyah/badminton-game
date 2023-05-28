@@ -14,10 +14,11 @@ extents = Vector3( 23.7765, 6.96669, 15.7712 )
 points = PoolVector3Array( -21.4645, -9.64465, -0.593338, 21.4645, 1.00615, 0.660066, 21.4645, -9.64465, 0.660066, 21.4645, 1.00615, -0.593338, -21.4645, 1.00615, 0.660066, 21.4645, -9.64465, -0.593338, -21.4645, -9.64465, 0.660066, -21.4645, 1.00615, -0.593338 )
 
 [sub_resource type="SpatialMaterial" id=1]
-albedo_color = Color( 0.454902, 0.454902, 0.454902, 1 )
+albedo_color = Color( 0, 0.231373, 0.435294, 1 )
 
 [sub_resource type="SpatialMaterial" id=2]
 flags_vertex_lighting = true
+albedo_color = Color( 0.666667, 0.666667, 0.666667, 1 )
 
 [sub_resource type="PlaneMesh" id=4]
 size = Vector2( 100, 100 )

@@ -79,4 +79,13 @@ margin_right = 600.0
 margin_bottom = 1024.0
 size_flags_vertical = 3
 
+[node name="play" type="Button" parent="CanvasLayer/Control/SafeArea/VBoxContainer/CenterContainer"]
+margin_left = 250.0
+margin_top = 410.0
+margin_right = 350.0
+margin_bottom = 490.0
+rect_min_size = Vector2( 100, 80 )
+text = "Play"
+
 [connection signal="pressed" from="CanvasLayer/Control/SafeArea/VBoxContainer/HBoxContainer/back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/SafeArea/VBoxContainer/CenterContainer/play" to="." method="_on_play_pressed"]

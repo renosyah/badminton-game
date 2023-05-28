@@ -38,10 +38,9 @@ func setup_shuttlecocks():
 	shuttlecock.set_network_master(Network.PLAYER_HOST_ID)
 	shuttlecock.connect("land", self, "_on_shuttlecock_land")
 	add_child(shuttlecock)
-	
+	shuttlecock.translation = Vector3(100,100,100)
 	
 func _on_shuttlecock_land(_shuttlecock :BaseProjectile):
-	# just for test
 	pass
 	
 ################################################################
@@ -56,7 +55,6 @@ func setup_arena():
 	
 func _on_projectile_enter_area(projectile :BaseProjectile, area :int):
 	# print("projectile %s enter on %s" % [projectile.name, area])
-	# just for test
 	pass
 	
 	
@@ -77,31 +75,11 @@ func _get_opposite_team(team :int) -> int:
 ################################################################
 # team cameras
 
-var _camera_team_1 :FixCamera
-var _camera_team_2 :FixCamera
+var _camera :FixCamera
 
 func setup_camera():
-	var camera_scene = preload("res://assets/fix_camera/fix_camera.tscn")
-	
-	_camera_team_1 = camera_scene.instance()
-	add_child(_camera_team_1)
-	_camera_team_1.translation.z = 40
-	_camera_team_1.translation.y = 35
-	
-	_camera_team_2 = camera_scene.instance()
-	add_child(_camera_team_2)
-	_camera_team_2.translation.z = -40
-	_camera_team_2.translation.y = 35
-	_camera_team_2.rotation_degrees.y = 180
-	
-func _get_team_camera(team :int) -> FixCamera:
-	match (team):
-		1:
-			return _camera_team_1
-		2:
-			return _camera_team_2
-			
-	return _camera_team_1
+	_camera = preload("res://assets/fix_camera/fix_camera.tscn").instance()
+	add_child(_camera)
 	
 ################################################################
 # directional light
@@ -113,7 +91,6 @@ func setup_enviroment():
 	
 ################################################################
 # sound
-
 var _sound :AudioStreamPlayer
 
 func setup_sound():

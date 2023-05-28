@@ -39,9 +39,13 @@ func _ready():
 		set_process(false)
 	
 func launch():
+	rpc("_launch", target)
+	
+remotesync func _launch(_target :Vector3):
 	if not _is_master:
 		return
 		
+	target = _target
 	target = target + Vector3(1,0,1) * rand_range(-random_offset, random_offset)
 	_trajectory_aim = target
 	if curve:
@@ -88,11 +92,13 @@ func puppet_moving(delta :float) -> void:
 	rotation.z = lerp_angle(rotation.z, _puppet_rotation.z, 5 * delta)
 	
 func stop():
+	rpc("_stop")
+	
+remotesync func _stop():
 	if not _is_master:
 		return
 		
 	set_process(false)
-	
 	
 remotesync func _on_land():
 	emit_signal("land", self)
