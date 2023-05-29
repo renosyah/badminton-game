@@ -4,10 +4,14 @@ class_name Arena
 signal on_projectile_hit_net(projectile)
 signal on_projectile_enter_area(projectile, area)
 
+onready var net_area = $net_area
 onready var side_team__1 = $side_team_1
 onready var side_team__2 = $side_team_2
 onready var tween = $Tween
 onready var net = $net
+
+func is_projectile_hit_net() -> bool:
+	return _have_have_projectile(net_area.get_overlapping_bodies())
 
 func is_side_have_projectile(team :int) -> bool:
 	match (team):

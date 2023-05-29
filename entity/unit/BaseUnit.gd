@@ -7,8 +7,7 @@ export var speed :int = 1
 export var move_direction :Vector3
 
 export var is_bot :bool = false
-export var move_to_completed :bool = true
-export var move_to :Vector3
+var move_to = null #Vector3
 
 var _velocity :Vector3 = Vector3.ZERO
 
@@ -39,12 +38,12 @@ func master_moving(delta :float) -> void:
 	_velocity = Vector3.ZERO
 	
 	# for bot
-	if is_bot and not move_to_completed:
+	if is_bot and move_to != null:
 		move_direction = translation.direction_to(move_to).normalized()
 		if translation.distance_to(move_to) < 0.2:
-			move_to_completed = true
+			move_to = null
 			
-	if is_bot and move_to_completed:
+	if is_bot and move_to == null:
 		move_direction = Vector3.ZERO
 		
 	_velocity = move_direction * speed

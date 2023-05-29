@@ -17,10 +17,6 @@ func _ready():
 
 func master_moving(delta :float) -> void:
 	.master_moving(delta)
-	
-	if is_bot and move_to_completed:
-		return
-		
 	_turn_spatial_pivot_to_moving(self, delta)
 	
 func swing_racket():

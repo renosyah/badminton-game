@@ -4,7 +4,6 @@ class_name ScorePanel
 signal time_up
 
 export var time_remaining :int = 60
-export var rotate_to :float = 0
 
 onready var viewport = $MeshInstance/sprite3d/Viewport
 onready var sprite_3d = $MeshInstance/sprite3d
@@ -22,6 +21,12 @@ func start_timer():
 func show_score(team_1_score, team_2_score :int):
 	v_box_container.show_score(team_1_score, team_2_score)
 
+func show_out():
+	v_box_container.show_out()
+	
+func rotate_to(rotate_to :float):
+	rotation.y = deg2rad(rotate_to)
+	
 func _on_Timer_timeout():
 	time_remaining -= 1
 	v_box_container.show_time_left(time_remaining)
@@ -31,6 +36,3 @@ func _on_Timer_timeout():
 		return
 		
 	timer.start()
-	
-func _process(delta):
-	rotation.y = lerp_angle(rotation.y, deg2rad(rotate_to), 15 * delta)

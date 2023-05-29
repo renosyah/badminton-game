@@ -10,8 +10,8 @@ var service_from :Athletes
 onready var reset_match_delay = $reset_match_delay
 
 func _ready():
-	_camera.rotate_to = 0
-	_score_panel.rotate_to = 0
+	_camera.rotate_to(0)
+	_score_panel.rotate_to(0)
 	
 	athletes_team__1a.set_network_master(Network.PLAYER_HOST_ID)
 	athletes_team__1b.set_network_master(Network.PLAYER_HOST_ID)
@@ -44,6 +44,11 @@ func _ready():
 	reset_match_delay.start()
 	
 func _on_reset_match_delay_timeout():
+	athletes_team__1a.move_to = null
+	athletes_team__2a.move_to = null
+	athletes_team__1b.move_to = null
+	athletes_team__2b.move_to = null
+	
 	var pos_1 = _arena.get_side_team(1)
 	var pos_2 = _arena.get_side_team(2)
 	
@@ -57,21 +62,19 @@ func _on_reset_match_delay_timeout():
 	athletes_team__2a.look_at(_arena.translation, Vector3.UP)
 	athletes_team__2b.look_at(_arena.translation, Vector3.UP)
 	
-	shuttlecock.translation = service_from.translation
+	shuttlecock.set_translation(service_from.translation)
 	
 func _on_projectile_enter_area(projectile :BaseProjectile, area :int):
 	._on_projectile_enter_area(projectile, area)
 	
 	if area == 1 and projectile.sender_team != 1:
 		var a = [athletes_team__1a, athletes_team__1b]
-		var at = a[rand_range(0, 2)]
-		at.move_to_completed = false
+		var at = get_closes(a, projectile.target)
 		at.move_to = projectile.target
 		
 	if area == 2 and projectile.sender_team != 2:
 		var b = [athletes_team__2a, athletes_team__2b]
-		var at = b[rand_range(0, 2)]
-		at.move_to_completed = false
+		var at = get_closes(b, projectile.target)
 		at.move_to = projectile.target
 
 func _on_projectile_hit_net(projectile :BaseProjectile):
@@ -84,17 +87,12 @@ func _on_shuttlecock_land(_shuttlecock :BaseProjectile):
 	_sound.stream = preload("res://assets/sound/whistle.mp3")
 	_sound.play()
 	
-	athletes_team__1a.move_to_completed = true
-	athletes_team__2a.move_to_completed = true
-	athletes_team__1b.move_to_completed = true
-	athletes_team__2b.move_to_completed = true
-	
 	var is_in :bool = false
 	
 	if _arena.is_side_have_projectile(1):
 		is_in = true
 		var a = [athletes_team__1a, athletes_team__1b]
-		var at = a[rand_range(0, 2)]
+		var at = get_closes(a, _shuttlecock.translation)
 		service_from = at
 		if _shuttlecock.sender_team == 2:
 			.add_score(2)
@@ -102,12 +100,17 @@ func _on_shuttlecock_land(_shuttlecock :BaseProjectile):
 	if _arena.is_side_have_projectile(2):
 		is_in = true
 		var b = [athletes_team__2a, athletes_team__2b]
-		var at = b[rand_range(0, 2)]
+		var at = get_closes(b, _shuttlecock.translation)
 		service_from = at
 		if _shuttlecock.sender_team == 1:
 			.add_score(1)
+			
+	if _arena.is_projectile_hit_net():
+		.add_score(_get_opposite_team(_shuttlecock.sender_team))
+		is_in = true
 		
 	if not is_in:
+		.show_out()
 		.add_score(_get_opposite_team(_shuttlecock.sender_team))
 		
 	reset_match_delay.start()
@@ -117,7 +120,7 @@ func _on_projectile_in_athletes_range(athletes :Athletes, _shuttlecock :BaseProj
 	
 	athletes.look_at(_arena.translation, Vector3.UP)
 	athletes.move_direction = Vector3.ZERO
-	athletes.move_to_completed = true
+	athletes.move_to = null
 	
 	athletes.swing_racket()
 	yield(athletes, "racket_swung")

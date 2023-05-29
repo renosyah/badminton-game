@@ -57,6 +57,15 @@ remotesync func _launch(_target :Vector3):
 	look_at(_trajectory_aim, Vector3.UP)
 	set_process(true)
 	
+func set_translation(v :Vector3):
+	if not _is_master:
+		return
+		
+	rpc("_set_translation", v)
+	
+remotesync func _set_translation(v :Vector3):
+	translation = v
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta :float) -> void:
 	moving(delta)

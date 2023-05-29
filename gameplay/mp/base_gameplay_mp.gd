@@ -55,9 +55,6 @@ func add_score(team :int):
 		2:
 			team_2_score += 1
 			
-	update_score()
-
-func update_score():
 	if not is_server():
 		return
 		
@@ -68,10 +65,16 @@ remotesync func _update_score(_team_1_score, _team_2_score :int):
 		team_1_score = _team_1_score
 		team_2_score = _team_2_score
 		
-	display_score()
-	
-func display_score():
 	_score_panel.show_score(team_1_score, team_2_score)
+	
+func show_out():
+	if not is_server():
+		return
+		
+	rpc("_show_out")
+	
+remotesync func _show_out():
+	_score_panel.show_out()
 	
 func _time_up():
 	if not is_server():
@@ -206,6 +209,23 @@ func on_exit_game_session():
 func to_main_menu():
 	get_tree().change_scene("res://menu/main_menu/main_menu.tscn")
 	
+################################################################
+# utils code
+
+func get_closes(bodies :Array, from :Vector3) -> BaseUnit:
+	if bodies.empty():
+		return null
+		
+	var default :BaseUnit = bodies[0]
+	for i in bodies:
+		var dis_1 = from.distance_squared_to(default.global_transform.origin)
+		var dis_2 = from.distance_squared_to(i.global_transform.origin)
+		
+		if dis_2 < dis_1:
+			default = i
+		
+	return default
+
 ################################################################
 # network utils code
 func is_server():
