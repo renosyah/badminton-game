@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://assets/score_panel/score_panel.obj" type="ArrayMesh" id=1]
 [ext_resource path="res://assets/score_panel/score_panel_ui.tscn" type="PackedScene" id=2]
@@ -11,11 +11,17 @@ albedo_color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
 [sub_resource type="SpatialMaterial" id=2]
 albedo_color = Color( 0.121569, 0.121569, 0.121569, 1 )
 
+[sub_resource type="CubeMesh" id=3]
+size = Vector3( 200, 100, 2 )
+
+[sub_resource type="SpatialMaterial" id=4]
+albedo_color = Color( 0.564706, 0.564706, 0.564706, 1 )
+
 [node name="score_panel" type="Spatial"]
 script = ExtResource( 4 )
 
 [node name="MeshInstance" type="MeshInstance" parent="."]
-transform = Transform( 1, 0, 0, 0, 0.989726, 0.142974, 0, -0.142974, 0.989726, 0, 14, -60 )
+transform = Transform( 1, 0, 0, 0, 0.996194, 0.0871557, 0, -0.0871557, 0.996194, 0, 14, -60 )
 mesh = ExtResource( 1 )
 material/0 = SubResource( 1 )
 material/1 = SubResource( 2 )
@@ -33,6 +39,11 @@ render_target_update_mode = 3
 gui_disable_input = true
 
 [node name="VBoxContainer" parent="MeshInstance/sprite3d/Viewport" instance=ExtResource( 2 )]
+
+[node name="wall" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -13.2828, -62.2564 )
+mesh = SubResource( 3 )
+material/0 = SubResource( 4 )
 
 [node name="Timer" type="Timer" parent="."]
 one_shot = true

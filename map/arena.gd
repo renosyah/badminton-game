@@ -6,6 +6,8 @@ signal on_projectile_enter_area(projectile, area)
 
 onready var side_team__1 = $side_team_1
 onready var side_team__2 = $side_team_2
+onready var tween = $Tween
+onready var net = $net
 
 func is_side_have_projectile(team :int) -> bool:
 	match (team):
@@ -47,7 +49,10 @@ func _on_side_team_2_body_entered(body):
 func _on_net_area_body_entered(body):
 	if not body is BaseProjectile:
 		return
-		
+	
+	tween.interpolate_property(net, "scale", Vector3.ONE * 0.85, Vector3.ONE, 0.2,Tween.TRANS_BOUNCE)
+	tween.start()
+	
 	emit_signal("on_projectile_hit_net", body)
 
 

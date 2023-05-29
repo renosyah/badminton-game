@@ -21,10 +21,10 @@ func _ready():
 	var pos_1 = _arena.get_side_team(1)
 	var pos_2 = _arena.get_side_team(2)
 	
-	athletes_team__1a.translation = Vector3(pos_1.x - 3, 3, pos_1.z)
-	athletes_team__1b.translation = Vector3(pos_1.x + 3, 3, pos_1.z)
-	athletes_team__2a.translation = Vector3(pos_2.x + 3, 3, pos_2.z)
-	athletes_team__2b.translation = Vector3(pos_2.x - 3, 3, pos_2.z)
+	athletes_team__1a.translation = Vector3(pos_1.x - 6, 3, pos_1.z)
+	athletes_team__1b.translation = Vector3(pos_1.x + 6, 3, pos_1.z)
+	athletes_team__2a.translation = Vector3(pos_2.x + 6, 3, pos_2.z)
+	athletes_team__2b.translation = Vector3(pos_2.x - 6, 3, pos_2.z)
 	
 	athletes_team__1a.look_at(_arena.translation, Vector3.UP)
 	athletes_team__1b.look_at(_arena.translation, Vector3.UP)
@@ -47,10 +47,10 @@ func _on_reset_match_delay_timeout():
 	var pos_1 = _arena.get_side_team(1)
 	var pos_2 = _arena.get_side_team(2)
 	
-	athletes_team__1a.translation = Vector3(pos_1.x - 3, 3, pos_1.z)
-	athletes_team__1b.translation = Vector3(pos_1.x + 3, 3, pos_1.z)
-	athletes_team__2a.translation = Vector3(pos_2.x + 3, 3, pos_2.z)
-	athletes_team__2b.translation = Vector3(pos_2.x - 3, 3, pos_2.z)
+	athletes_team__1a.translation = Vector3(pos_1.x - 6, 3, pos_1.z)
+	athletes_team__1b.translation = Vector3(pos_1.x + 6, 3, pos_1.z)
+	athletes_team__2a.translation = Vector3(pos_2.x + 6, 3, pos_2.z)
+	athletes_team__2b.translation = Vector3(pos_2.x - 6, 3, pos_2.z)
 	
 	athletes_team__1a.look_at(_arena.translation, Vector3.UP)
 	athletes_team__1b.look_at(_arena.translation, Vector3.UP)
@@ -121,9 +121,6 @@ func _on_projectile_in_athletes_range(athletes :Athletes, _shuttlecock :BaseProj
 	
 	athletes.swing_racket()
 	yield(athletes, "racket_swung")
-	
-	_sound.stream = preload("res://assets/sound/click.wav")
-	_sound.play()
 	
 	_shuttlecock.sender_team = athletes.team
 	_shuttlecock.random_offset = rand_range(5, 25)

@@ -2,6 +2,7 @@ extends StaticBody
 class_name BaseProjectile
 
 signal land(projectile)
+signal launch(projectile)
 
 export var speed :int = 12
 export var target :Vector3
@@ -42,6 +43,8 @@ func launch():
 	rpc("_launch", target)
 	
 remotesync func _launch(_target :Vector3):
+	emit_signal("launch", self)
+	
 	if not _is_master:
 		return
 		

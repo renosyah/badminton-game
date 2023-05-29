@@ -16,6 +16,7 @@ func _ready():
 	setup_arena()
 	setup_score_panel()
 	setup_shuttlecocks()
+	setup_particle()
 	setup_ui()
 	
 func _notification(what):
@@ -92,12 +93,27 @@ func setup_shuttlecocks():
 	shuttlecock = preload("res://entity/projectile/shuttlecock/shuttlecock.tscn").instance()
 	shuttlecock.name = "shuttlecock"
 	shuttlecock.set_network_master(Network.PLAYER_HOST_ID)
+	shuttlecock.connect("launch", self, "_on_shuttlecock_launch")
 	shuttlecock.connect("land", self, "_on_shuttlecock_land")
 	add_child(shuttlecock)
 	shuttlecock.translation = Vector3(100,100,100)
 	
+func _on_shuttlecock_launch(_shuttlecock :BaseProjectile):
+	_hit_particle.display_hit("", Color.white, _shuttlecock.translation)
+	_sound.stream = preload("res://assets/sound/click.wav")
+	_sound.play()
+	
 func _on_shuttlecock_land(_shuttlecock :BaseProjectile):
-	pass
+	_hit_particle.display_hit("", Color.white, _shuttlecock.translation)
+	
+################################################################
+# particles
+var _hit_particle :HitParticle
+
+func setup_particle():
+	_hit_particle = preload("res://assets/hit_particle/hit_particle.tscn").instance()
+	_hit_particle.custom_particle_scene = preload("res://assets/hit_particle/custom_particle/mesh/custom_mesh_particle.tscn")
+	add_child(_hit_particle)
 	
 ################################################################
 # arena
@@ -116,7 +132,7 @@ func _on_projectile_enter_area(projectile :BaseProjectile, area :int):
 	
 func _on_projectile_hit_net(projectile :BaseProjectile):
 	#print("projectile %s hit net" % projectile.name)
-	pass
+	_hit_particle.display_hit("", Color.white, projectile.translation)
 	
 	
 func _get_opposite_team(team :int) -> int:

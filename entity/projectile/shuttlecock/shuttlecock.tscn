@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://entity/projectile/shuttlecock/shuttlecock.obj" type="ArrayMesh" id=1]
 [ext_resource path="res://entity/projectile/shuttlecock/shuttlecock.gd" type="Script" id=2]
@@ -11,34 +11,70 @@ albedo_color = Color( 0.341176, 0.341176, 0.341176, 1 )
 [sub_resource type="SpatialMaterial" id=2]
 flags_unshaded = true
 
-[sub_resource type="BoxShape" id=3]
-extents = Vector3( 0.5, 0.5, 0.5 )
-
 [sub_resource type="Curve" id=4]
 _data = [ Vector2( 0.0333333, 0.981818 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
 
 [sub_resource type="SpatialMaterial" id=5]
 flags_unshaded = true
-albedo_color = Color( 1, 1, 1, 0.466667 )
+
+[sub_resource type="BoxShape" id=3]
+extents = Vector3( 0.5, 0.5, 0.5 )
+
+[sub_resource type="Animation" id=6]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("Spatial:rotation_degrees")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector3( 0, 0, 0 ) ]
+}
+
+[sub_resource type="Animation" id=7]
+resource_name = "rotate"
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Spatial:rotation_degrees")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector3( 0, 0, 0 ), Vector3( 0, 0, 360 ) ]
+}
 
 [node name="shuttlecock" type="StaticBody"]
 collision_layer = 2
 collision_mask = 0
 script = ExtResource( 2 )
 
-[node name="MeshInstance" type="MeshInstance" parent="."]
-transform = Transform( 1.8, 0, 0, 0, -1.09278e-07, -1.8, 0, 2.5, -7.86805e-08, 0, 0.22824, -0.176071 )
+[node name="Spatial" type="Spatial" parent="."]
+
+[node name="MeshInstance" type="MeshInstance" parent="Spatial"]
+transform = Transform( 1.8, -1.42109e-14, 0, 0, -1.09279e-07, -1.8, 0, 2.5, -7.86805e-08, 0.00279552, -0.00493806, -0.176071 )
 mesh = ExtResource( 1 )
+skeleton = NodePath("../..")
 material/0 = SubResource( 1 )
 material/1 = SubResource( 2 )
 
-[node name="CollisionShape" type="CollisionShape" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.197111, 0 )
-shape = SubResource( 3 )
-
 [node name="TrailRender" parent="." instance=ExtResource( 3 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.244143, 1.14989 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0181632, -0.0259513, 1.14989 )
 width = 0.8
 width_curve = SubResource( 4 )
 max_points = 25
 material = SubResource( 5 )
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+shape = SubResource( 3 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/RESET = SubResource( 6 )
+anims/rotate = SubResource( 7 )

@@ -110,6 +110,8 @@ shape = SubResource( 11 )
 transform = Transform( -4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 23.7249, 0, 2.65194 )
 shape = SubResource( 11 )
 
+[node name="Tween" type="Tween" parent="."]
+
 [connection signal="body_entered" from="side_team_1" to="." method="_on_side_team_1_body_entered"]
 [connection signal="body_entered" from="side_team_2" to="." method="_on_side_team_2_body_entered"]
 [connection signal="body_entered" from="net_area" to="." method="_on_net_area_body_entered"]
