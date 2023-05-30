@@ -40,15 +40,19 @@ func _ready():
 		set_process(false)
 	
 func launch():
-	rpc("_launch", target)
+	rpc("_launch", sender_team, random_offset, speed, target)
 	
-remotesync func _launch(_target :Vector3):
+remotesync func _launch(_sender_team :int, _random_offset :float, _speed :int, _target :Vector3):
 	emit_signal("launch", self)
 	
 	if not _is_master:
 		return
-		
+	
+	sender_team = _sender_team
+	random_offset = _random_offset
+	speed = _speed
 	target = _target
+	
 	target = target + Vector3(1,0,1) * rand_range(-random_offset, random_offset)
 	_trajectory_aim = target
 	if curve:
