@@ -34,19 +34,29 @@ script = ExtResource( 4 )
 margin_right = 600.0
 margin_bottom = 1024.0
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/SafeArea/VBoxContainer"]
+[node name="MarginContainer" type="Control" parent="CanvasLayer/Control/SafeArea/VBoxContainer"]
 margin_right = 600.0
-margin_bottom = 936.0
+margin_bottom = 736.0
 size_flags_vertical = 3
 
+[node name="smash" type="Button" parent="CanvasLayer/Control/SafeArea/VBoxContainer/MarginContainer"]
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = -80.0
+margin_top = -40.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 80, 80 )
+text = "Smash"
+
 [node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control/SafeArea/VBoxContainer"]
-margin_top = 940.0
+margin_top = 740.0
 margin_right = 600.0
 margin_bottom = 940.0
 alignment = 1
 
 [node name="joystick" parent="CanvasLayer/Control/SafeArea/VBoxContainer/HBoxContainer" instance=ExtResource( 1 )]
-visible = false
 margin_left = 200.0
 margin_right = 400.0
 
@@ -55,3 +65,5 @@ margin_top = 944.0
 margin_right = 600.0
 margin_bottom = 1024.0
 rect_min_size = Vector2( 0, 80 )
+
+[connection signal="pressed" from="CanvasLayer/Control/SafeArea/VBoxContainer/MarginContainer/smash" to="." method="_on_smash_pressed"]

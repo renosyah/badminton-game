@@ -7,7 +7,8 @@ export var speed :int = 1
 export var move_direction :Vector3
 
 export var is_bot :bool = false
-var move_to = null #Vector3
+export var is_moving :bool = false
+var move_to :Vector3
 
 var _velocity :Vector3 = Vector3.ZERO
 
@@ -37,20 +38,18 @@ func _ready():
 func master_moving(delta :float) -> void:
 	_velocity = Vector3.ZERO
 	
-	# for bot
-	if is_bot and move_to != null:
-		move_direction = translation.direction_to(move_to).normalized()
-		if translation.distance_to(move_to) < 0.2:
-			move_to = null
-			
-	if is_bot and move_to == null:
-		move_direction = Vector3.ZERO
+	if is_moving:
+		# for bot
+		if is_bot:
+			move_direction = translation.direction_to(move_to)
+			if translation.distance_to(move_to) < 0.2:
+				is_moving = false
+				
+		_velocity = move_direction * speed
 		
-	_velocity = move_direction * speed
-	
-	if not is_on_floor():
-		_velocity.y = -_gravity
-	
+		if not is_on_floor():
+			_velocity.y = -_gravity
+		
 	if _velocity != Vector3.ZERO:
 		_velocity = move_and_slide(_velocity, Vector3.UP)
 		
@@ -61,11 +60,11 @@ func puppet_moving(delta :float) -> void:
 	rotation.y = lerp_angle(rotation.y, _puppet_rotation.y, 5 * delta)
 	rotation.z = lerp_angle(rotation.z, _puppet_rotation.z, 5 * delta)
 
-func _turn_spatial_pivot_to_moving(_spatial :Spatial, delta :float):
+func _turn_spatial_pivot_to_moving(_at :Vector3, _spatial :Spatial, delta :float):
 	if move_direction == Vector3.ZERO:
 		return
 		 
-	var to :Vector3 = move_direction * 100
+	var to :Vector3 = _at
 	to.y = _spatial.translation.y
 		
 	var _transform :Transform = _spatial.transform.looking_at(to, Vector3.UP)

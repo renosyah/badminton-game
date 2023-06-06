@@ -67,14 +67,14 @@ remotesync func _update_score(_team_1_score, _team_2_score :int):
 		
 	_score_panel.show_score(team_1_score, team_2_score)
 	
-func show_out():
+func show_bang(type_bang :int):
 	if not is_server():
 		return
 		
-	rpc("_show_out")
+	rpc("_show_bang", type_bang)
 	
-remotesync func _show_out():
-	_score_panel.show_out()
+remotesync func _show_bang(type_bang :int):
+	_score_panel.show_bang(type_bang)
 	
 func _time_up():
 	if not is_server():
@@ -124,6 +124,7 @@ var _arena :Arena
 
 func setup_arena():
 	_arena = preload("res://map/arena.tscn").instance()
+	_arena.enable_projectile_scan = is_server()
 	_arena.connect("on_projectile_enter_area", self, "_on_projectile_enter_area")
 	_arena.connect("on_projectile_hit_net", self, "_on_projectile_hit_net")
 	add_child(_arena)

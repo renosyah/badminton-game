@@ -219,7 +219,7 @@ _global_script_class_icons={
 [application]
 
 config/name="badminton-game"
-run/main_scene="res://menu/splash_screen/splash_screen.tscn"
+run/main_scene="res://menu/main_menu/main_menu.tscn"
 config/icon="res://icon.png"
 
 [autoload]

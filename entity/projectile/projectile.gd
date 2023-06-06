@@ -98,7 +98,7 @@ func master_moving(delta :float) -> void:
 		_trajectory_aim += Vector3.DOWN * speed * delta
 	
 func puppet_moving(delta :float) -> void:
-	translation = translation.linear_interpolate(_puppet_translation, 2.5 * delta)
+	translation = translation.linear_interpolate(_puppet_translation, 5 * delta)
 	rotation.x = lerp_angle(rotation.x, _puppet_rotation.x, 5 * delta)
 	rotation.y = lerp_angle(rotation.y, _puppet_rotation.y, 5 * delta)
 	rotation.z = lerp_angle(rotation.z, _puppet_rotation.z, 5 * delta)
@@ -149,7 +149,7 @@ func _setup_network_timer() -> void:
 		_network_timmer.queue_free()
 		
 	_network_timmer = Timer.new()
-	_network_timmer.wait_time = Network.LATENCY_DELAY
+	_network_timmer.wait_time = 0.04
 	_network_timmer.connect("timeout", self , "_network_timmer_timeout")
 	_network_timmer.autostart = true
 	add_child(_network_timmer)

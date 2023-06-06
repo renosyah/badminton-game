@@ -9,8 +9,8 @@ script = ExtResource( 1 )
 [node name="athletes_team_1a" parent="." instance=ExtResource( 2 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -13.9942 )
 team = 1
-speed = 24
-is_bot = true
+speed = 12
+is_moving = true
 color = Color( 1, 0, 0, 1 )
 
 [node name="athletes_team_1b" parent="." instance=ExtResource( 2 )]

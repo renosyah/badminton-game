@@ -4,12 +4,19 @@ class_name Arena
 signal on_projectile_hit_net(projectile)
 signal on_projectile_enter_area(projectile, area)
 
+export var enable_projectile_scan :bool = true
+
 onready var net_area = $net_area
 onready var side_team__1 = $side_team_1
 onready var side_team__2 = $side_team_2
 onready var tween = $Tween
 onready var net = $net
 
+func _ready():
+	net_area.set_deferred("monitoring", enable_projectile_scan)
+	side_team__1.set_deferred("monitoring", enable_projectile_scan)
+	side_team__2.set_deferred("monitoring", enable_projectile_scan)
+	
 func is_projectile_hit_net() -> bool:
 	return _have_have_projectile(net_area.get_overlapping_bodies())
 

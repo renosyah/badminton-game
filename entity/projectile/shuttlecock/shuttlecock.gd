@@ -20,6 +20,7 @@ remotesync func _on_land():
 	animation_player.stop()
 	
 remotesync func _set_translation(v :Vector3):
-	._set_translation(v)
 	trail_render.render = false
+	yield(get_tree(),"idle_frame")
+	._set_translation(v)
 	
