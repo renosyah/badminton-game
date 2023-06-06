@@ -6,8 +6,8 @@ onready var trail_render = $TrailRender
 func _ready():
 	trail_render.render = false
 
-remotesync func _launch(_target :Vector3):
-	._launch(_target)
+remotesync func _launch(_sender_team :int, _random_offset :float, _speed :int, _target :Vector3):
+	._launch(_sender_team, _random_offset, _speed, _target)
 	trail_render.render = true
 	animation_player.play("rotate")
 	
