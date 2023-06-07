@@ -10,6 +10,7 @@ remotesync func _launch(_sender_team :int, _random_offset :float, _speed :int, _
 	._launch(_sender_team, _random_offset, _speed, _target)
 	trail_render.render = true
 	animation_player.play("rotate")
+	visible = true
 	
 remotesync func _stop():
 	._stop()

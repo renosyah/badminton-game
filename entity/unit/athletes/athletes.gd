@@ -1,26 +1,35 @@
 extends BaseUnit
 class_name Athletes
 
-signal on_projectile_in_range(athletes, projectile)
+signal smash_ready(athletes)
 
 export var color :Color = Color.white
-export var use_smash :bool = false
+export var power :float  = 25.0
+export var accuration :float = 0.75
+export var smash_cooldown :float = 10
 
+var use_smash :bool = false
+var shot_at :Vector3
 var shuttlecock :BaseProjectile
 
 onready var animation_player = $AnimationPlayer
 onready var mesh_instance = $Spatial/MeshInstance
 onready var mesh_material :SpatialMaterial = mesh_instance.get_surface_material(0).duplicate()
+onready var smash_cooldown_timer = $smash_cooldown
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	mesh_material.albedo_color = color
 	mesh_instance.set_surface_material(0, mesh_material)
+	smash_cooldown_timer.wait_time = smash_cooldown
+	smash_cooldown_timer.start()
 
 func master_moving(delta :float) -> void:
 	.master_moving(delta)
-	var _dir = translation.direction_to(shuttlecock.global_transform.origin)
-	_turn_spatial_pivot_to_moving(_dir * 100, self, delta)
+	
+	if is_instance_valid(shuttlecock):
+		var _dir = translation.direction_to(shuttlecock.global_transform.origin)
+		_turn_spatial_pivot_to_moving(_dir * 100, self, delta)
 	
 func swing_racket():
 	if not _is_master:
@@ -41,8 +50,28 @@ func _on_service_area_body_entered(body):
 	if not body == shuttlecock:
 		return
 		
-	emit_signal("on_projectile_in_range", self, body)
+	swing_racket()
 	
+	var result :float = rand_range(power - power * 0.25, power + power * 0.25)
+	shuttlecock.sender_team = team
+	shuttlecock.random_offset = (1.0 - accuration) * (power + power * 0.25)
+	shuttlecock.speed = result
+	
+	if use_smash:
+		shuttlecock.speed = power * 2
+		use_smash = false
+		smash_cooldown_timer.wait_time = smash_cooldown
+		smash_cooldown_timer.start()
+		
+	shuttlecock.target = shot_at
+	shuttlecock.target.y = 0.5
+	shuttlecock.launch()
+	
+func _on_smash_cooldown_timeout():
+	emit_signal("smash_ready", self)
+
+
+
 
 
 

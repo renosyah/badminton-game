@@ -36,19 +36,23 @@ margin_bottom = 1024.0
 
 [node name="MarginContainer" type="Control" parent="CanvasLayer/Control/SafeArea/VBoxContainer"]
 margin_right = 600.0
-margin_bottom = 736.0
+margin_bottom = 628.0
 size_flags_vertical = 3
 
-[node name="smash" type="Button" parent="CanvasLayer/Control/SafeArea/VBoxContainer/MarginContainer"]
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-margin_left = -80.0
-margin_top = -40.0
-margin_bottom = 40.0
-rect_min_size = Vector2( 80, 80 )
+[node name="smash" type="Button" parent="CanvasLayer/Control/SafeArea/VBoxContainer"]
+margin_left = 250.0
+margin_top = 632.0
+margin_right = 350.0
+margin_bottom = 692.0
+rect_min_size = Vector2( 100, 60 )
+size_flags_horizontal = 4
 text = "Smash"
+
+[node name="MarginContainer3" type="MarginContainer" parent="CanvasLayer/Control/SafeArea/VBoxContainer"]
+margin_top = 696.0
+margin_right = 600.0
+margin_bottom = 736.0
+rect_min_size = Vector2( 0, 40 )
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control/SafeArea/VBoxContainer"]
 margin_top = 740.0
@@ -66,4 +70,4 @@ margin_right = 600.0
 margin_bottom = 1024.0
 rect_min_size = Vector2( 0, 80 )
 
-[connection signal="pressed" from="CanvasLayer/Control/SafeArea/VBoxContainer/MarginContainer/smash" to="." method="_on_smash_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/SafeArea/VBoxContainer/smash" to="." method="_on_smash_pressed"]

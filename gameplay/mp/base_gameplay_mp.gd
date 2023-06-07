@@ -31,22 +31,16 @@ func _notification(what):
 		
 func on_back_pressed():
 	on_exit_game_session()
+	
 ################################################################
 # rules
-var is_playing :bool = false
-	
-func set_is_playing(_is_playing :bool):
-	if not is_server():
-		return
-		
-	rpc("_set_is_playing", _is_playing)
-	
-remotesync func _set_is_playing(_is_playing :bool):
-	is_playing = _is_playing
-	
+var service_from :Athletes
+var controled_player :Athletes
+var players :Dictionary = {1 : [], 2 :[]}
+var teams : Array = [1,2]
+
 ################################################################
 # scores
-
 var _score_panel :ScorePanel
 
 func setup_score_panel():
@@ -111,15 +105,43 @@ func setup_shuttlecocks():
 	shuttlecock.connect("launch", self, "_on_shuttlecock_launch")
 	shuttlecock.connect("land", self, "_on_shuttlecock_land")
 	add_child(shuttlecock)
-	shuttlecock.translation = Vector3(100,100,100)
+	shuttlecock.translation = Vector3(0,20,0)
+	shuttlecock.visible = false
 	
 func _on_shuttlecock_launch(_shuttlecock :BaseProjectile):
 	_hit_particle.display_hit("", Color.white, _shuttlecock.translation)
-	_sound.stream = preload("res://assets/sound/click.wav")
+	_sound.stream = hit
 	_sound.play()
 	
 func _on_shuttlecock_land(_shuttlecock :BaseProjectile):
 	_hit_particle.display_hit("", Color.white, _shuttlecock.translation)
+	
+	if not is_server():
+		return
+		
+	var has_in :bool = _check_team_sender_score(_shuttlecock)
+	if has_in:
+		return
+		
+	var has_hit_net :bool = _arena.is_projectile_hit_net()
+	if has_hit_net:
+		show_bang(3)
+		add_score(_get_opposite_team(_shuttlecock.sender_team))
+		return
+		
+	show_bang(1)
+	add_score(_get_opposite_team(_shuttlecock.sender_team))
+	
+func _check_team_sender_score(_shuttlecock :BaseProjectile) -> bool:
+	for team in teams:
+		if _arena.is_side_have_projectile(team):
+			show_bang(2)
+			service_from = get_closes(players[team], _shuttlecock.global_transform.origin)
+			if _shuttlecock.sender_team == _get_opposite_team(team):
+				add_score(_get_opposite_team(team))
+			return true
+			
+	return false
 	
 ################################################################
 # particles
@@ -179,9 +201,14 @@ func setup_enviroment():
 	
 ################################################################
 # sound
+const whistle = preload("res://assets/sound/whistle.mp3")
+const hit = preload("res://assets/sound/click.wav")
+
 var _sound :AudioStreamPlayer
 
 func setup_sound():
+	whistle.loop = false
+	
 	_sound = AudioStreamPlayer.new()
 	add_child(_sound)
 
@@ -191,7 +218,11 @@ var _ui :UiMp
 
 func setup_ui():
 	_ui = preload("res://gameplay/mp/ui/ui.tscn").instance()
+	_ui.connect("use_smash", self, "_player_use_smash")
 	add_child(_ui)
+	
+func _player_use_smash():
+	pass
 	
 ################################################################
 # network connection watcher
@@ -224,8 +255,25 @@ func to_main_menu():
 	
 ################################################################
 # utils code
+func get_player_spawn_position(team :int, index :int) -> Vector3:
+	var pos = _arena.get_side_team(team)
+	if index == 0:
+		pos.x -= 6
+	elif index == 1:
+		pos.x += 6
+		
+	pos.y = 3
+	return pos
 	
-func _get_avg_position(list_pos :Array, y :float = 0) -> Vector3:
+func get_players_positions(players :Array) -> Array:
+	var pos :Array = []
+	for player in players:
+		if player is BaseUnit:
+			pos.append(player.global_transform.origin)
+			
+	return pos
+	
+func get_avg_position(list_pos :Array, y :float = 0) -> Vector3:
 	var pos :Vector3 = Vector3.ZERO
 	var pos_len = list_pos.size()
 	for i in list_pos:
@@ -235,7 +283,7 @@ func _get_avg_position(list_pos :Array, y :float = 0) -> Vector3:
 	pos.y = y
 	return pos
 	
-func _get_move_direction_with_basis_camera() -> Vector3:
+func get_move_direction_with_basis_camera() -> Vector3:
 	var move_direction = _ui.get_move_direction()
 	var camera_basis = _camera.transform.basis
 	return camera_basis.z * move_direction.z + camera_basis.x * move_direction.x

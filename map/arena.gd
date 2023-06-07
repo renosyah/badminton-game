@@ -21,6 +21,9 @@ func is_projectile_hit_net() -> bool:
 	return _have_have_projectile(net_area.get_overlapping_bodies())
 
 func is_side_have_projectile(team :int) -> bool:
+	if not side_team__1.monitoring or not side_team__2.monitoring:
+		return false
+		
 	match (team):
 		1:
 			return _have_have_projectile(side_team__1.get_overlapping_bodies())

@@ -60,12 +60,6 @@ func puppet_moving(delta :float) -> void:
 	rotation.z = lerp_angle(rotation.z, _puppet_rotation.z, 5 * delta)
 
 func _turn_spatial_pivot_to_moving(_at :Vector3, _spatial :Spatial, delta :float):
-	if move_direction == Vector3.ZERO:
-		return
-		 
-	var to :Vector3 = _at
-	to.y = _spatial.translation.y
-		
-	var _transform :Transform = _spatial.transform.looking_at(to, Vector3.UP)
+	var _transform :Transform = _spatial.transform.looking_at(Vector3(_at.x, 0, _at.z), Vector3.UP)
 	_spatial.transform = _spatial.transform.interpolate_with(_transform, 5 * delta)
 
