@@ -39,7 +39,6 @@ func master_moving(delta :float) -> void:
 	_velocity = Vector3.ZERO
 	
 	if is_moving:
-		# for bot
 		if is_bot:
 			move_direction = translation.direction_to(move_to)
 			if translation.distance_to(move_to) < 0.2:
@@ -47,9 +46,9 @@ func master_moving(delta :float) -> void:
 				
 		_velocity = move_direction * speed
 		
-		if not is_on_floor():
-			_velocity.y = -_gravity
-		
+	if not is_on_floor():
+		_velocity.y = -_gravity
+			
 	if _velocity != Vector3.ZERO:
 		_velocity = move_and_slide(_velocity, Vector3.UP)
 		

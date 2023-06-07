@@ -1,7 +1,6 @@
 extends BaseUnit
 class_name Athletes
 
-signal racket_swung
 signal on_projectile_in_range(athletes, projectile)
 
 export var color :Color = Color.white
@@ -20,9 +19,8 @@ func _ready():
 
 func master_moving(delta :float) -> void:
 	.master_moving(delta)
-	
-	if is_moving:
-		_turn_spatial_pivot_to_moving(shuttlecock.global_transform.origin, self, delta)
+	var _dir = translation.direction_to(shuttlecock.global_transform.origin)
+	_turn_spatial_pivot_to_moving(_dir * 100, self, delta)
 	
 func swing_racket():
 	if not _is_master:
@@ -33,14 +31,14 @@ func swing_racket():
 remotesync func _swing_racket():
 	animation_player.play("swing_racket")
 	
-func _racket_swung():
-	emit_signal("racket_swung")
-
 func _on_service_area_body_entered(body):
 	if not _is_master:
 		return
 	
 	if not body is BaseProjectile:
+		return
+		
+	if not body == shuttlecock:
 		return
 		
 	emit_signal("on_projectile_in_range", self, body)

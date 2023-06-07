@@ -15,3 +15,19 @@ func _ready():
 	athletes_team__2a.set_network_master(Network.PLAYER_HOST_ID)
 	athletes_team__2b.set_network_master(Network.PLAYER_HOST_ID)
 	
+func _process(delta):
+	var cam_pos :Vector3
+	
+	if is_playing:
+		cam_pos = ._get_avg_position([
+			athletes_team__1a.translation,
+			athletes_team__1b.translation,
+			shuttlecock.translation]
+		)
+	else:
+		cam_pos = ._get_avg_position([
+			athletes_team__1a.translation,
+			athletes_team__1b.translation]
+		)
+		
+	_camera.translation = _camera.translation.linear_interpolate(cam_pos, 1 * delta) 

@@ -7,7 +7,6 @@ onready var athletes_team__1b = $athletes_team_1b
 onready var athletes_team__2b = $athletes_team_2b
 
 var service_from :Athletes
-var is_playing :bool
 onready var reset_match_delay = $reset_match_delay
 
 func _ready():
@@ -66,6 +65,7 @@ func _on_reset_match_delay_timeout():
 	athletes_team__2b.look_at(_arena.translation, Vector3.UP)
 	
 	shuttlecock.set_translation(service_from.translation)
+	.set_is_playing(true)
 	
 func _on_projectile_enter_area(projectile :BaseProjectile, area :int):
 	._on_projectile_enter_area(projectile, area)
@@ -126,20 +126,16 @@ func _on_shuttlecock_land(_shuttlecock :BaseProjectile):
 		
 	reset_match_delay.start()
 	
-	is_playing = false
-	athletes_team__1a.is_moving = is_playing
-	athletes_team__2a.is_moving = is_playing
-	athletes_team__1b.is_moving = is_playing
-	athletes_team__2b.is_moving = is_playing
+	athletes_team__2a.is_moving = false
+	athletes_team__1b.is_moving = false
+	athletes_team__2b.is_moving = false
+	.set_is_playing(false)
 	
 func _player_use_smash():
 	athletes_team__1a.use_smash = true
 	
 func _on_projectile_in_athletes_range(athletes :Athletes, _shuttlecock :BaseProjectile):
-	_shuttlecock.stop()
-	
 	athletes.swing_racket()
-	yield(athletes, "racket_swung")
 	
 	_shuttlecock.sender_team = athletes.team
 	_shuttlecock.random_offset = rand_range(5, 25)
@@ -154,22 +150,21 @@ func _on_projectile_in_athletes_range(athletes :Athletes, _shuttlecock :BaseProj
 	_shuttlecock.target.y = 0.5
 	_shuttlecock.launch()
 	
-	is_playing = true
 	
 func _process(delta):
-	athletes_team__1a.is_moving = is_playing
+	var cam_pos :Vector3
 	
-	if not is_playing:
-		return
+	if is_playing:
+		cam_pos = ._get_avg_position([
+			athletes_team__1a.translation,
+			athletes_team__1b.translation,
+			shuttlecock.translation]
+		)
+	else:
+		cam_pos = ._get_avg_position([
+			athletes_team__1a.translation,
+			athletes_team__1b.translation]
+		)
 		
-	var pos = (athletes_team__1a.translation + shuttlecock.translation) / 2
-	_camera.translation = _camera.translation.linear_interpolate(Vector3(pos.x, 0, pos.z), 0.2 * delta) 
-		
-	var move_direction = _ui.get_move_direction()
-	var camera_basis = _camera.transform.basis
-	athletes_team__1a.move_direction = camera_basis.z * move_direction.z + camera_basis.x * move_direction.x
-
-
-
-
-
+	_camera.translation = _camera.translation.linear_interpolate(cam_pos, 1 * delta) 
+	athletes_team__1a.move_direction = ._get_move_direction_with_basis_camera()

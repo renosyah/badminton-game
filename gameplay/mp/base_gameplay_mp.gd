@@ -31,6 +31,18 @@ func _notification(what):
 		
 func on_back_pressed():
 	on_exit_game_session()
+################################################################
+# rules
+var is_playing :bool = false
+	
+func set_is_playing(_is_playing :bool):
+	if not is_server():
+		return
+		
+	rpc("_set_is_playing", _is_playing)
+	
+remotesync func _set_is_playing(_is_playing :bool):
+	is_playing = _is_playing
 	
 ################################################################
 # scores
@@ -212,7 +224,22 @@ func to_main_menu():
 	
 ################################################################
 # utils code
-
+	
+func _get_avg_position(list_pos :Array, y :float = 0) -> Vector3:
+	var pos :Vector3 = Vector3.ZERO
+	var pos_len = list_pos.size()
+	for i in list_pos:
+		pos += i
+		
+	pos = pos / pos_len
+	pos.y = y
+	return pos
+	
+func _get_move_direction_with_basis_camera() -> Vector3:
+	var move_direction = _ui.get_move_direction()
+	var camera_basis = _camera.transform.basis
+	return camera_basis.z * move_direction.z + camera_basis.x * move_direction.x
+	
 func get_closes(bodies :Array, from :Vector3) -> BaseUnit:
 	if bodies.empty():
 		return null
