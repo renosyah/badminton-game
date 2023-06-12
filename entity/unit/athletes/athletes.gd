@@ -63,7 +63,8 @@ func _on_service_area_body_entered(body):
 		smash_cooldown_timer.wait_time = smash_cooldown
 		smash_cooldown_timer.start()
 		
-	shuttlecock.target = shot_at
+	var _target :Vector3 = shot_at + Vector3(1, 0, 0) * rand_range(-15, 15)
+	shuttlecock.target = _target
 	shuttlecock.target.y = 0.5
 	shuttlecock.launch()
 	
