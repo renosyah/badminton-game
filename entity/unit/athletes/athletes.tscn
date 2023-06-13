@@ -112,8 +112,4 @@ shape = SubResource( 5 )
 anims/RESET = SubResource( 6 )
 anims/swing_racket = SubResource( 7 )
 
-[node name="smash_cooldown" type="Timer" parent="."]
-one_shot = true
-
 [connection signal="body_entered" from="service_area" to="." method="_on_service_area_body_entered"]
-[connection signal="timeout" from="smash_cooldown" to="." method="_on_smash_cooldown_timeout"]
